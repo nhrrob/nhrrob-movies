@@ -1,8 +1,8 @@
 <?php
 
-namespace MoviePlugin\Http\Controllers;
+namespace nhrrob_movies\Http\Controllers;
 
-use MoviePlugin\Movie;
+use nhrrob_movies\Movie;
 use Illuminate\Http\Request;
 
 class MovieController
@@ -10,13 +10,47 @@ class MovieController
     public function index()
     {
         $movies = Movie::all();
-        return view('movies', compact('movies'));
+        return view('movies.index', compact('movies'));
     }
 
     public function create()
     {
-        // Add logic for creating a movie
+        return view('movies.create');
     }
 
-    // Add other CRUD methods as needed
+    public function store(Request $request)
+    {
+        $movie = new Movie();
+        $movie->title = $request->input('title');
+        $movie->description = $request->input('description');
+        $movie->release_date = $request->input('release_date');
+        $movie->save();
+
+        return redirect('/movies')->with('success', 'Movie created successfully!');
+    }
+
+    public function edit($id)
+    {
+        $movie = Movie::find($id);
+        return view('movies.edit', compact('movie'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $movie = Movie::find($id);
+        $movie->title = $request->input('title');
+        $movie->description = $request->input('description');
+        $movie->release_date = $request->input('release_date');
+        $movie->save();
+
+        return redirect('/movies')->with('success', 'Movie updated successfully!');
+    }
+
+    public function destroy($id)
+    {
+        $movie = Movie::find($id);
+        $movie->delete();
+
+        return redirect('/movies')->with('success', 'Movie deleted successfully!');
+    }
 }

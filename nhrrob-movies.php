@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Movie Plugin
+ * Plugin Name: nhrrob Movies
  * Description: A movie plugin using Laravel-style practices.
  * Version: 1.0
  * Author: Your Name
