@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: NHRRob Movies
+Plugin Name: NHR Movies
 Description: A plugin to manage movies using Laravel's Eloquent ORM and Blade templating.
 Version: 1.0
 Author: NHRRob
@@ -35,7 +35,7 @@ function nhrrob_movies_activate() {
             id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             title VARCHAR(255) NOT NULL,
             description TEXT,
-            release_date DATE,
+            release_date DATE NULL,
             created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         ) $charset_collate;";
@@ -110,7 +110,7 @@ add_action('admin_init', 'nhrrob_movies_register_settings');
 function nhrrob_movies_admin_menu() {
     add_menu_page(
         'NHRRob Movies Settings',
-        'NHRRob Movies',
+        'NHR Movies',
         'manage_options',
         'nhrrob-movies',
         'nhrrob_movies_settings_page'
@@ -190,7 +190,7 @@ function nhrrob_movies_handle_form_submission() {
 
     $movie->title = sanitize_text_field($_POST['title']);
     $movie->description = sanitize_textarea_field($_POST['description']);
-    $movie->release_date = $_POST['release_date']; // Consider validating the date format
+    $movie->release_date = isset($_POST['release_date']) && $_POST['release_date'] !== '' ? $_POST['release_date'] : null;
 
     $movie->save();
 
@@ -227,8 +227,15 @@ function nhrrob_movies_handle_delete() {
 
 add_action('admin_post_nhrrob_movies_delete', 'nhrrob_movies_handle_delete');
 
+function nhrrob_movies_run_migrations() {
+    // \NHRRob\Movies\Database\Migrations\UpdateMoviesTable::up();
+    \NHRRob\Movies\Database\Migrations\UpdateReleaseDateNullable::up();
+}
 
-// function nhrrob_movies_update_db() {
-//     \NHRRob\Movies\Database\Migrations\UpdateMoviesTable::up();
-// }
-// register_activation_hook(__FILE__, 'nhrrob_movies_update_db');
+register_activation_hook(__FILE__, 'nhrrob_movies_run_migrations');
+
+function nhrrob_movies_revert_migrations() {
+    \NHRRob\Movies\Database\Migrations\UpdateReleaseDateNullable::down();
+}
+
+register_deactivation_hook(__FILE__, 'nhrrob_movies_revert_migrations');
