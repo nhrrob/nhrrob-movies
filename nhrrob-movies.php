@@ -75,7 +75,7 @@ function nhrrob_movies_init() {
 add_action('init', 'nhrrob_movies_init');
 
 /**
- * Register settings page and submenu pages.
+ * Register the admin menu.
  */
 function nhrrob_movies_admin_menu() {
     add_menu_page(
@@ -83,27 +83,20 @@ function nhrrob_movies_admin_menu() {
         'NHR Movies',
         'manage_options',
         'nhrrob-movies',
-        'nhrrob_movies_settings_page'
-    );
-
-    add_submenu_page(
-        'nhrrob-movies',
-        'Movie List',
-        'Movies List',
-        'manage_options',
-        'nhrrob-movies-list',
-        'nhrrob_movies_list_page'
+        'nhrrob_movies_list_page',
+        'dashicons-video-alt2', // Icon for the menu
+        // 6 // Position in the admin menu
     );
 
     add_submenu_page(
         null,
-        'Edit Movie',
-        'Edit Movie',
+        'Add New Movie',
+        'Add New',
         'manage_options',
         'nhrrob-movies-add',
         'nhrrob_movies_add_page'
     );
-    
+
     add_submenu_page(
         null,
         'Edit Movie',
@@ -114,17 +107,6 @@ function nhrrob_movies_admin_menu() {
     );
 }
 add_action('admin_menu', 'nhrrob_movies_admin_menu');
-
-/**
- * Render the settings page.
- */
-function nhrrob_movies_settings_page() {
-    if (!current_user_can('manage_options')) {
-        return;
-    }
-    global $blade;
-    echo $blade->render('admin.settings');
-}
 
 /**
  * Render the list of movies.
@@ -175,7 +157,7 @@ function nhrrob_movies_handle_form_submission() {
     $movie->release_date = $_POST['release_date'] ?: null;
 
     $movie->save();
-    wp_redirect(admin_url('admin.php?page=nhrrob-movies-list'));
+    wp_redirect(admin_url('admin.php?page=nhrrob-movies'));
     exit;
 }
 add_action('admin_post_nhrrob_movies_save', 'nhrrob_movies_handle_form_submission');
@@ -196,7 +178,7 @@ function nhrrob_movies_handle_delete() {
     if ($movie) {
         $movie->delete();
     }
-    wp_redirect(admin_url('admin.php?page=nhrrob-movies-list'));
+    wp_redirect(admin_url('admin.php?page=nhrrob-movies'));
     exit;
 }
 add_action('admin_post_nhrrob_movies_delete', 'nhrrob_movies_handle_delete');
