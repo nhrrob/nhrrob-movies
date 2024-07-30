@@ -15,17 +15,19 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Jenssegers\Blade\Blade;
+use NHRRob\Movies\Controllers\MovieController;
 
 // Initialize Blade templating
 global $blade;
 $blade = new Blade(__DIR__ . '/app/Views', __DIR__ . '/cache/views');
 
+// Include Routes
+global $nhrrob_movies_routes;
+$nhrrob_movies_routes = require __DIR__ . '/routes/web.php';
+
 // Plugin activation hook
 register_activation_hook(__FILE__, 'nhrrob_movies_activate');
 
-/**
- * Activation hook to set up the database.
- */
 function nhrrob_movies_activate() {
     global $wpdb;
 
@@ -47,11 +49,8 @@ function nhrrob_movies_activate() {
     }
 }
 
-/**
- * Initialize the plugin's core functionalities.
- */
 function nhrrob_movies_init() {
-    global $wpdb, $blade;
+    global $wpdb;
 
     // Initialize Eloquent ORM
     $capsule = new Capsule;
@@ -67,86 +66,51 @@ function nhrrob_movies_init() {
     ]);
     $capsule->setAsGlobal();
     $capsule->bootEloquent();
-
-    // Store the MovieController instance
-    global $nhrrob_movies_controller;
-    $nhrrob_movies_controller = new \NHRRob\Movies\Controllers\MovieController();
 }
 add_action('init', 'nhrrob_movies_init');
 
-/**
- * Register the admin menu.
- */
 function nhrrob_movies_admin_menu() {
-    global $nhrrob_movies_controller;
-
     add_menu_page(
         'NHR Movies',
         'NHR Movies',
         'manage_options',
         'nhrrob-movies',
-        [$nhrrob_movies_controller, 'index'],
+        'nhrrob_movies_route',
         'dashicons-video-alt2'
-    );
-
-    add_submenu_page(
-        null,
-        'Add New Movie',
-        'Add New',
-        'manage_options',
-        'nhrrob-movies-create',
-        [$nhrrob_movies_controller, 'create']
-    );
-
-    add_submenu_page(
-        null,
-        'Edit Movie',
-        'Edit Movie',
-        'manage_options',
-        'nhrrob-movies-edit',
-        [$nhrrob_movies_controller, 'edit']
     );
 }
 add_action('admin_menu', 'nhrrob_movies_admin_menu');
 
-/**
- * Handle form submissions for adding/editing movies.
- */
-function nhrrob_movies_handle_form_submission() {
-    global $nhrrob_movies_controller;
+function nhrrob_movies_route() {
+    global $nhrrob_movies_routes;
 
-    if (!isset($_POST['nhrrob_movies_nonce']) || !wp_verify_nonce($_POST['nhrrob_movies_nonce'], 'nhrrob_movies_nonce_action')) {
-        return;
-    }
-    if (!current_user_can('manage_options')) {
-        return;
-    }
+    $current_page = isset($_GET['page']) ? $_GET['page'] : 'nhrrob-movies';
+    $action = isset($_GET['action']) ? $_GET['action'] : 'index';
+    $route_key = $current_page . '/' . $action;
 
-    $nhrrob_movies_controller->store();
+    if (isset($nhrrob_movies_routes[$route_key])) {
+        $controller_action = $nhrrob_movies_routes[$route_key];
+        $controller = new $controller_action[0]();
+        $method = $controller_action[1];
+
+        if (method_exists($controller, $method)) {
+            $controller->$method();
+        } else {
+            echo 'Error: Method not found.';
+        }
+    } else {
+        echo 'Error: Route not found.';
+    }
 }
-add_action('admin_post_nhrrob_movies_save', 'nhrrob_movies_handle_form_submission');
 
-/**
- * Handle deletion of movies.
- */
-function nhrrob_movies_handle_delete() {
-    global $nhrrob_movies_controller;
-
-    if (!isset($_GET['nhrrob_movies_nonce']) || !wp_verify_nonce($_GET['nhrrob_movies_nonce'], 'nhrrob_movies_delete_nonce')) {
-        wp_die(__('Invalid nonce specified', 'nhrrob-movies'), __('Error', 'nhrrob-movies'), ['response' => 403]);
-    }
-    if (!current_user_can('manage_options')) {
-        wp_die(__('You do not have permission to delete this movie', 'nhrrob-movies'), __('Error', 'nhrrob-movies'), ['response' => 403]);
-    }
-
-    $nhrrob_movies_controller->destroy();
-}
-add_action('admin_post_nhrrob_movies_delete', 'nhrrob_movies_handle_delete');
-
-/**
- * Enqueue styles for the admin pages.
- */
 function nhrrob_movies_enqueue_styles() {
     wp_enqueue_style('tailwind-css', 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
 }
 add_action('admin_enqueue_scripts', 'nhrrob_movies_enqueue_styles');
+
+// Handle form submissions for adding/editing movies
+$movieController = new NHRRob\Movies\Controllers\MovieController();
+
+add_action('admin_post_nhrrob_movies_store', [$movieController, 'store']);
+add_action('admin_post_nhrrob_movies_update', [$movieController, 'update']);
+add_action('admin_post_nhrrob_movies_delete', [$movieController, 'destroy']);

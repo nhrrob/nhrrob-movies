@@ -2,7 +2,12 @@
 
 use NHRRob\Movies\Controllers\MovieController;
 
-$controller = new MovieController();
-
-add_action('wp_ajax_nhrrob_get_movies', [$controller, 'index']);
-add_action('wp_ajax_nopriv_nhrrob_get_movies', [$controller, 'index']);
+// Define the routes
+return [
+    'nhrrob-movies/index' => [MovieController::class, 'index'],
+    'nhrrob-movies/create' => [MovieController::class, 'create'],
+    'nhrrob-movies/store' => [MovieController::class, 'store'],
+    'nhrrob-movies/edit' => [MovieController::class, 'edit'],
+    'nhrrob-movies/update' => [MovieController::class, 'update'],
+    'nhrrob-movies/delete' => [MovieController::class, 'destroy'],
+];

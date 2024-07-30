@@ -5,15 +5,16 @@ namespace NHRRob\Movies\Controllers;
 use NHRRob\Movies\Models\Movie;
 
 class MovieController {
+    
     public function index() {
         global $blade;
         $movies = Movie::all();
-        echo $blade->render('admin.movies.index', ['movies' => $movies]);
+        echo $blade->render('admin.movie.index', ['movies' => $movies]);
     }
 
     public function create() {
         global $blade;
-        echo $blade->render('admin.movies.create');
+        echo $blade->render('admin.movie.create');
     }
 
     public function store() {
@@ -37,7 +38,7 @@ class MovieController {
         global $blade;
         $movie_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         $movie = Movie::find($movie_id);
-        echo $blade->render('admin.movies.edit', ['movie' => $movie]);
+        echo $blade->render('admin.movie.edit', ['movie' => $movie]);
     }
 
     public function update() {

@@ -4,7 +4,7 @@
 <div class="wrap max-w-2xl mx-auto">
     <h1 class="text-2xl font-bold mb-4">{{ __('Edit Movie', 'nhrrob-movies') }}</h1>
     <form method="post" action="{{ admin_url('admin-post.php') }}" class="bg-white p-6 rounded-lg shadow-md">
-        <input type="hidden" name="action" value="nhrrob_movies_save">
+        <input type="hidden" name="action" value="nhrrob_movies_update">
         {!! wp_nonce_field('nhrrob_movies_nonce_action', 'nhrrob_movies_nonce') !!}
         <input type="hidden" name="movie_id" value="{{ $movie->id }}">
 

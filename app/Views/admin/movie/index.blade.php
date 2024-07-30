@@ -4,7 +4,7 @@
 <div class="wrap">
     <div class="flex justify-between items-center mb-4">
         <h1 class="text-2xl font-bold">{{ __('Movies List', 'nhrrob-movies') }}</h1>
-        <a href="{{ admin_url('admin.php?page=nhrrob-movies-create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        <a href="{{ admin_url('admin.php?page=nhrrob-movies&action=create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
             {{ __('Add Movie', 'nhrrob-movies') }}
         </a>
     </div>
@@ -24,8 +24,8 @@
                 <td class="py-2 px-4 border-b">{{ $movie->description }}</td>
                 <td class="py-2 px-4 border-b">{{ $movie->release_date }}</td>
                 <td class="py-2 px-4 border-b text-right">
-                    <a href="{{ admin_url('admin.php?page=nhrrob-movies-edit&id=' . $movie->id) }}" class="text-blue-600 hover:underline">{{ __('Edit', 'nhrrob-movies') }}</a>
-                    <a href="{{ admin_url('admin-post.php?action=nhrrob_movies_delete&id=' . $movie->id . '&nhrrob_movies_nonce=' . wp_create_nonce('nhrrob_movies_delete_nonce')) }}" class="text-red-600 hover:underline ml-4"
+                    <a href="{{ admin_url('admin.php?page=nhrrob-movies&action=edit&id=' . $movie->id) }}" class="text-blue-600 hover:underline">{{ __('Edit', 'nhrrob-movies') }}</a>
+                    <a href="{{ admin_url('admin-post.php?action=nhrrob_movies&action=nhrrob_movies_delete&id=' . $movie->id . '&nhrrob_movies_nonce=' . wp_create_nonce('nhrrob_movies_delete_nonce')) }}" class="text-red-600 hover:underline ml-4"
                            onclick="return confirm('Are you sure you want to delete this movie?');">
                            {{ __('Delete', 'nhrrob-movies') }}
                     </a>
