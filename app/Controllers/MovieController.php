@@ -8,7 +8,7 @@ class MovieController {
     
     public function index() {
         global $blade;
-        $movies = Movie::all();
+        $movies = Movie::latest()->get();
         echo $blade->render('admin.movie.index', ['movies' => $movies]);
     }
 
@@ -26,12 +26,6 @@ class MovieController {
         $movie->save();
         wp_redirect(admin_url('admin.php?page=nhrrob-movies'));
         exit;
-    }
-
-    public function show($id) {
-        global $blade;
-        $movie = Movie::find($id);
-        echo $blade->render('admin.movies.show', ['movie' => $movie]);
     }
 
     public function edit() {
@@ -65,10 +59,5 @@ class MovieController {
         }
         wp_redirect(admin_url('admin.php?page=nhrrob-movies'));
         exit;
-    }
-
-    public function registerRoutes() {
-        add_action('admin_post_nhrrob_movies_save', [$this, 'store']);
-        add_action('admin_post_nhrrob_movies_delete', [$this, 'destroy']);
     }
 }

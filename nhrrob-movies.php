@@ -19,7 +19,7 @@ use NHRRob\Movies\Controllers\MovieController;
 
 // Initialize Blade templating
 global $blade;
-$blade = new Blade(__DIR__ . '/app/Views', __DIR__ . '/cache/views');
+$blade = new Blade(__DIR__ . '/resources/views', __DIR__ . '/cache/views');
 
 // Include Routes
 global $nhrrob_movies_routes;
@@ -108,9 +108,7 @@ function nhrrob_movies_enqueue_styles() {
 }
 add_action('admin_enqueue_scripts', 'nhrrob_movies_enqueue_styles');
 
-// Handle form submissions for adding/editing movies
-$movieController = new NHRRob\Movies\Controllers\MovieController();
-
-add_action('admin_post_nhrrob_movies_store', [$movieController, 'store']);
-add_action('admin_post_nhrrob_movies_update', [$movieController, 'update']);
-add_action('admin_post_nhrrob_movies_delete', [$movieController, 'destroy']);
+// Handle form submissions
+add_action('admin_post_nhrrob_movies_store', [new MovieController(), 'store']);
+add_action('admin_post_nhrrob_movies_update', [new MovieController(), 'update']);
+add_action('admin_post_nhrrob_movies_delete', [new MovieController(), 'destroy']);
