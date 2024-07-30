@@ -239,3 +239,9 @@ function nhrrob_movies_revert_migrations() {
 }
 
 register_deactivation_hook(__FILE__, 'nhrrob_movies_revert_migrations');
+
+function nhrrob_movies_enqueue_styles() {
+    wp_enqueue_style('tailwind-css', 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
+}
+
+add_action('admin_enqueue_scripts', 'nhrrob_movies_enqueue_styles');

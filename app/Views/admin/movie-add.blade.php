@@ -1,27 +1,30 @@
 @extends('layouts.master')
 
 @section('content')
-<div class="wrap">
-    <h1>{{ __('Add New Movie', 'nhrrob-movies') }}</h1>
-    <form method="post" action="{{ admin_url('admin-post.php') }}">
+<div class="wrap max-w-2xl mx-auto">
+    <h1 class="text-2xl font-bold mb-4">{{ __('Add New Movie', 'nhrrob-movies') }}</h1>
+    <form method="post" action="{{ admin_url('admin-post.php') }}" class="bg-white p-6 rounded-lg shadow-md">
         <input type="hidden" name="action" value="nhrrob_movies_save">
         {!! wp_nonce_field('nhrrob_movies_nonce_action', 'nhrrob_movies_nonce') !!}
 
-        <table class="form-table">
-            <tr valign="top">
-                <th scope="row">{{ __('Title', 'nhrrob-movies') }}</th>
-                <td><input type="text" name="title" value="" required></td>
-            </tr>
-            <tr valign="top">
-                <th scope="row">{{ __('Description', 'nhrrob-movies') }}</th>
-                <td><textarea name="description"></textarea></td>
-            </tr>
-            <tr valign="top">
-                <th scope="row">{{ __('Release Date', 'nhrrob-movies') }}</th>
-                <td><input type="date" name="release_date"></td>
-            </tr>
-        </table>
-        <p><button type="submit" class="button button-primary">{{ __('Save Movie', 'nhrrob-movies') }}</button></p>
+        <div class="mb-4">
+            <label for="title" class="block text-gray-700 font-bold mb-2">{{ __('Title', 'nhrrob-movies') }}</label>
+            <input type="text" id="title" name="title" class="w-full p-2 border rounded" required>
+        </div>
+
+        <div class="mb-4">
+            <label for="description" class="block text-gray-700 font-bold mb-2">{{ __('Description', 'nhrrob-movies') }}</label>
+            <textarea id="description" name="description" class="w-full p-2 border rounded"></textarea>
+        </div>
+
+        <div class="mb-4">
+            <label for="release_date" class="block text-gray-700 font-bold mb-2">{{ __('Release Date', 'nhrrob-movies') }}</label>
+            <input type="date" id="release_date" name="release_date" class="w-full p-2 border rounded">
+        </div>
+
+        <div class="flex justify-end">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">{{ __('Save Movie', 'nhrrob-movies') }}</button>
+        </div>
     </form>
 </div>
 @endsection
