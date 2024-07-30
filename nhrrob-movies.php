@@ -109,7 +109,7 @@ add_action('admin_init', 'nhrrob_movies_register_settings');
 
 function nhrrob_movies_admin_menu() {
     add_menu_page(
-        'NHRRob Movies Settings',
+        'NHR Moviess',
         'NHR Movies',
         'manage_options',
         'nhrrob-movies',

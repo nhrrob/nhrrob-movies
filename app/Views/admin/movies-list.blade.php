@@ -25,7 +25,10 @@
                 <td class="py-2 px-4 border-b">{{ $movie->release_date }}</td>
                 <td class="py-2 px-4 border-b text-right">
                     <a href="{{ admin_url('admin.php?page=nhrrob-movies-edit&id=' . $movie->id) }}" class="text-blue-600 hover:underline">{{ __('Edit', 'nhrrob-movies') }}</a>
-                    <a href="{{ admin_url('admin.php?page=nhrrob-movies-delete&id=' . $movie->id) }}" class="text-red-600 hover:underline ml-4">{{ __('Delete', 'nhrrob-movies') }}</a>
+                    <a href="{{ admin_url('admin-post.php?action=nhrrob_movies_delete&id=' . $movie->id . '&nhrrob_movies_nonce=' . wp_create_nonce('nhrrob_movies_delete_nonce')) }}" class="text-red-600 hover:underline ml-4"
+                           onclick="return confirm('Are you sure you want to delete this movie?');">
+                           {{ __('Delete', 'nhrrob-movies') }}
+                    </a>
                 </td>
             </tr>
             @endforeach
