@@ -68,9 +68,9 @@ function nhrrob_movies_init() {
     $capsule->setAsGlobal();
     $capsule->bootEloquent();
 
-    // Register routes (if any for frontend)
-    $controller = new \NHRRob\Movies\Controllers\MovieController();
-    $controller->registerRoutes();
+    // Store the MovieController instance
+    global $nhrrob_movies_controller;
+    $nhrrob_movies_controller = new \NHRRob\Movies\Controllers\MovieController();
 }
 add_action('init', 'nhrrob_movies_init');
 
@@ -78,14 +78,15 @@ add_action('init', 'nhrrob_movies_init');
  * Register the admin menu.
  */
 function nhrrob_movies_admin_menu() {
+    global $nhrrob_movies_controller;
+
     add_menu_page(
         'NHR Movies',
         'NHR Movies',
         'manage_options',
         'nhrrob-movies',
-        'nhrrob_movies_list_page',
-        'dashicons-video-alt2', // Icon for the menu
-        // 6 // Position in the admin menu
+        [$nhrrob_movies_controller, 'index'],
+        'dashicons-video-alt2'
     );
 
     add_submenu_page(
@@ -93,8 +94,8 @@ function nhrrob_movies_admin_menu() {
         'Add New Movie',
         'Add New',
         'manage_options',
-        'nhrrob-movies-add',
-        'nhrrob_movies_add_page'
+        'nhrrob-movies-create',
+        [$nhrrob_movies_controller, 'create']
     );
 
     add_submenu_page(
@@ -103,45 +104,17 @@ function nhrrob_movies_admin_menu() {
         'Edit Movie',
         'manage_options',
         'nhrrob-movies-edit',
-        'nhrrob_movies_edit_page'
+        [$nhrrob_movies_controller, 'edit']
     );
 }
 add_action('admin_menu', 'nhrrob_movies_admin_menu');
 
 /**
- * Render the list of movies.
- */
-function nhrrob_movies_list_page() {
-    if (!current_user_can('manage_options')) {
-        return;
-    }
-    global $blade;
-    $movies = \NHRRob\Movies\Models\Movie::all();
-    echo $blade->render('admin.movies-list', ['movies' => $movies]);
-}
-
-/**
- * Render the Add Movie form.
- */
-function nhrrob_movies_add_page() {
-    global $blade;
-    echo $blade->render('admin.movie-add');
-}
-
-/**
- * Render the Edit Movie form.
- */
-function nhrrob_movies_edit_page() {
-    global $blade;
-    $movie_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-    $movie = \NHRRob\Movies\Models\Movie::find($movie_id);
-    echo $blade->render('admin.movie-edit', ['movie' => $movie]);
-}
-
-/**
  * Handle form submissions for adding/editing movies.
  */
 function nhrrob_movies_handle_form_submission() {
+    global $nhrrob_movies_controller;
+
     if (!isset($_POST['nhrrob_movies_nonce']) || !wp_verify_nonce($_POST['nhrrob_movies_nonce'], 'nhrrob_movies_nonce_action')) {
         return;
     }
@@ -149,16 +122,7 @@ function nhrrob_movies_handle_form_submission() {
         return;
     }
 
-    $movie_id = isset($_POST['movie_id']) ? intval($_POST['movie_id']) : null;
-    $movie = $movie_id ? \NHRRob\Movies\Models\Movie::find($movie_id) : new \NHRRob\Movies\Models\Movie;
-
-    $movie->title = sanitize_text_field($_POST['title']);
-    $movie->description = sanitize_textarea_field($_POST['description']);
-    $movie->release_date = $_POST['release_date'] ?: null;
-
-    $movie->save();
-    wp_redirect(admin_url('admin.php?page=nhrrob-movies'));
-    exit;
+    $nhrrob_movies_controller->store();
 }
 add_action('admin_post_nhrrob_movies_save', 'nhrrob_movies_handle_form_submission');
 
@@ -166,6 +130,8 @@ add_action('admin_post_nhrrob_movies_save', 'nhrrob_movies_handle_form_submissio
  * Handle deletion of movies.
  */
 function nhrrob_movies_handle_delete() {
+    global $nhrrob_movies_controller;
+
     if (!isset($_GET['nhrrob_movies_nonce']) || !wp_verify_nonce($_GET['nhrrob_movies_nonce'], 'nhrrob_movies_delete_nonce')) {
         wp_die(__('Invalid nonce specified', 'nhrrob-movies'), __('Error', 'nhrrob-movies'), ['response' => 403]);
     }
@@ -173,31 +139,9 @@ function nhrrob_movies_handle_delete() {
         wp_die(__('You do not have permission to delete this movie', 'nhrrob-movies'), __('Error', 'nhrrob-movies'), ['response' => 403]);
     }
 
-    $movie_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-    $movie = \NHRRob\Movies\Models\Movie::find($movie_id);
-    if ($movie) {
-        $movie->delete();
-    }
-    wp_redirect(admin_url('admin.php?page=nhrrob-movies'));
-    exit;
+    $nhrrob_movies_controller->destroy();
 }
 add_action('admin_post_nhrrob_movies_delete', 'nhrrob_movies_handle_delete');
-
-/**
- * Run migrations on plugin activation.
- */
-function nhrrob_movies_run_migrations() {
-    \NHRRob\Movies\Database\Migrations\UpdateReleaseDateNullable::up();
-}
-register_activation_hook(__FILE__, 'nhrrob_movies_run_migrations');
-
-/**
- * Revert migrations on plugin deactivation.
- */
-function nhrrob_movies_revert_migrations() {
-    \NHRRob\Movies\Database\Migrations\UpdateReleaseDateNullable::down();
-}
-register_deactivation_hook(__FILE__, 'nhrrob_movies_revert_migrations');
 
 /**
  * Enqueue styles for the admin pages.

@@ -4,7 +4,7 @@
 <div class="wrap">
     <div class="flex justify-between items-center mb-4">
         <h1 class="text-2xl font-bold">{{ __('Movies List', 'nhrrob-movies') }}</h1>
-        <a href="{{ admin_url('admin.php?page=nhrrob-movies-add') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        <a href="{{ admin_url('admin.php?page=nhrrob-movies-create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
             {{ __('Add Movie', 'nhrrob-movies') }}
         </a>
     </div>
