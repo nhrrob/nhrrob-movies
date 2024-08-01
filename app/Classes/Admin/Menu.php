@@ -26,7 +26,18 @@ class Menu {
 
         $hook = add_menu_page( __( 'NHR Movies', 'nhrrob-movies' ), __( 'NHR Movies', 'nhrrob-movies' ), $capability, $parent_slug, [ $this, 'nhrrob_movies_route' ], 'dashicons-video-alt2' );
 
-        add_action( 'admin_head-' . $hook, [ $this, 'enqueue_assets' ] );
+        // add_action( 'admin_head-' . $hook, [ $this, 'enqueue_assets' ] );
+        
+        $end = 'backend';
+        if('backend' === $end) {
+            $current_page = ! empty($_GET['page']  ) ? sanitize_text_field($_GET['page']) : '';
+
+            if ($current_page === 'nhrrob-movies') {
+                add_action('admin_enqueue_scripts', array($this, 'enqueue_assets'));                
+            }
+		}else if('frontend' === $end){
+			// add_action('wp_enqueue_scripts', array($this, 'handle_scripts_and_styles_frontend'));
+		}
     }
 
     public function nhrrob_movies_route() {

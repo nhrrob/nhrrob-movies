@@ -5,7 +5,7 @@
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '72102f97b33df2f99abaee382e953f0ad5f94997',
+        'reference' => '035bada0c1b3be3ce7ea295364346c054b8eafcb',
         'name' => 'nhrrob/nhrrob-movies',
         'dev' => true,
     ),
@@ -178,7 +178,7 @@
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '72102f97b33df2f99abaee382e953f0ad5f94997',
+            'reference' => '035bada0c1b3be3ce7ea295364346c054b8eafcb',
             'dev_requirement' => false,
         ),
         'psr/clock' => array(

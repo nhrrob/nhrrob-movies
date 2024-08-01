@@ -16,7 +16,7 @@ function nhrrob_movies_init() {
 }
 
 // Plugin activation hook
-register_activation_hook(__FILE__, 'nhrrob_movies_activate');
+register_activation_hook(NHRROB_MOVIES_FILE, 'nhrrob_movies_activate');
 
 function nhrrob_movies_activate() {
     CreateMoviesTable::up();
