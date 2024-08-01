@@ -5,7 +5,7 @@
  * Description: A plugin to manage movies using Laravel's Eloquent ORM and Blade templating.
  * Author: Nazmul Hasan Robin
  * Author URI: https://profiles.wordpress.org/nhrrob/
- * Version: 1.0.0
+ * Version: 1.1.0
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Text Domain: nhrrob-movies
@@ -30,7 +30,7 @@ final class Nhrrob_Movies {
      *
      * @var string
      */
-    const nhrrob_movies_version = '1.0.0';
+    const nhrrob_movies_version = '1.1.0';
 
     /**
      * Class construcotr

@@ -44,3 +44,4 @@ node_modules/           export-ignore
 build/                  export-ignore 
 postcss.config.js       export-ignore
 documentation.md        export-ignore
+cache/views/*           export-ignore

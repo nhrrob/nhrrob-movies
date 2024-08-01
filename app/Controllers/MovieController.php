@@ -3,21 +3,24 @@
 namespace Nhrrob\Movies\Controllers;
 
 use Nhrrob\Movies\Models\Movie;
+use Nhrrob\Movies\Traits\GlobalTrait;
 
 class MovieController
 {
+
+    use GlobalTrait;
 
     public function index()
     {
         global $blade;
         $movies = Movie::latest()->get();
-        echo $blade->render('admin.movie.index', ['movies' => $movies]);
+        echo wp_kses($blade->render('admin.movie.index', ['movies' => $movies]), $this->allowed_html());
     }
 
     public function create()
     {
         global $blade;
-        echo $blade->render('admin.movie.create');
+        echo wp_kses( $blade->render('admin.movie.create'), $this->allowed_html() );
     }
 
     public function store()
@@ -40,7 +43,7 @@ class MovieController
         global $blade;
         $movie_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         $movie = Movie::find($movie_id);
-        echo $blade->render('admin.movie.edit', ['movie' => $movie]);
+        echo wp_kses( $blade->render('admin.movie.edit', ['movie' => $movie]), $this->allowed_html() );
     }
 
     public function update()

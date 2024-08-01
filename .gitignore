@@ -9,4 +9,4 @@ composer.lock
 .idea/*
 pnpm-lock.yaml
 vendor
-/cache/views/*
+cache/views/*
