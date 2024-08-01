@@ -10,7 +10,8 @@
     },
     "autoload": {
         "psr-4": {
-            "NHRRob\\Movies\\": "app/"
+            "Nhrrob\\Movies\\": "app/",
+            "Nhrrob\\Movies\\Database\\": "database/"
         }
     }
 }

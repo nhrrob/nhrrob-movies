@@ -1,6 +1,10 @@
 <?php
 
-use NHRRob\Movies\Controllers\MovieController;
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly
+}
+
+use Nhrrob\Movies\Controllers\MovieController;
 
 // Define the routes
 return [

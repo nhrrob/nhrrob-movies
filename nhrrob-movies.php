@@ -1,10 +1,17 @@
 <?php
-/*
-Plugin Name: NHR Movies
-Description: A plugin to manage movies using Laravel's Eloquent ORM and Blade templating.
-Version: 1.0
-Author: NHRRob
-*/
+/**
+ * Plugin Name: NHR Movies
+ * Plugin URI: http://wordpress.org/plugins/nhrrob-movies/
+ * Description: A plugin to manage movies using Laravel's Eloquent ORM and Blade templating.
+ * Author: Nazmul Hasan Robin
+ * Author URI: https://profiles.wordpress.org/nhrrob/
+ * Version: 1.0.0
+ * Requires at least: 6.0
+ * Requires PHP: 7.4
+ * Text Domain: nhrrob-movies
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ */
 
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
@@ -13,102 +20,61 @@ if (!defined('ABSPATH')) {
 // Autoload dependencies
 require_once __DIR__ . '/vendor/autoload.php';
 
-use Illuminate\Database\Capsule\Manager as Capsule;
-use Jenssegers\Blade\Blade;
-use NHRRob\Movies\Controllers\MovieController;
+/**
+ * The main plugin class
+ */
+final class Nhrrob_Movies {
 
-// Initialize Blade templating
-global $blade;
-$blade = new Blade(__DIR__ . '/resources/views', __DIR__ . '/cache/views');
+    /**
+     * Plugin version
+     *
+     * @var string
+     */
+    const nhrrob_movies_version = '1.0.0';
 
-// Include Routes
-global $nhrrob_movies_routes;
-$nhrrob_movies_routes = require __DIR__ . '/routes/web.php';
+    /**
+     * Class construcotr
+     */
+    public function __construct() {
+        $this->define_constants();
 
-// Plugin activation hook
-register_activation_hook(__FILE__, 'nhrrob_movies_activate');
-
-function nhrrob_movies_activate() {
-    global $wpdb;
-
-    $table_name = $wpdb->prefix . 'movies';
-
-    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
-        $charset_collate = $wpdb->get_charset_collate();
-        $sql = "CREATE TABLE $table_name (
-            id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            title VARCHAR(255) NOT NULL,
-            description TEXT,
-            release_date DATE NULL,
-            created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-        ) $charset_collate;";
-
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
+        add_action( 'plugins_loaded', [ $this, 'init_plugin' ] );
     }
-}
 
-function nhrrob_movies_init() {
-    global $wpdb;
+    /**
+     * Define the required plugin constants
+     *
+     * @return void
+     */
+    public function define_constants() {
+        define( 'NHRROB_MOVIES_VERSION', self::nhrrob_movies_version );
+        define( 'NHRROB_MOVIES_FILE', __FILE__ );
+        define( 'NHRROB_MOVIES_PATH', __DIR__ );
+        define( 'NHRROB_MOVIES_URL', plugins_url( '', NHRROB_MOVIES_FILE ) );
+        define( 'NHRROB_MOVIES_PUBLIC', NHRROB_MOVIES_URL . '/public' );
+        define( 'NHRROB_MOVIES_PLUGIN_DIR', plugin_dir_path( NHRROB_MOVIES_FILE ) );
+        define( 'NHRROB_MOVIES_APP_PATH', NHRROB_MOVIES_PATH . '/app' );
+        define( 'NHRROB_MOVIES_VIEWS_PATH', NHRROB_MOVIES_PATH . '/resources/views' );
+        define( 'NHRROB_MOVIES_PUBLIC_PATH', NHRROB_MOVIES_PATH . '/public' );
+    }
 
-    // Initialize Eloquent ORM
-    $capsule = new Capsule;
-    $capsule->addConnection([
-        'driver'    => 'mysql',
-        'host'      => DB_HOST,
-        'database'  => DB_NAME,
-        'username'  => DB_USER,
-        'password'  => DB_PASSWORD,
-        'charset'   => 'utf8',
-        'collation' => 'utf8_unicode_ci',
-        'prefix'    => $wpdb->prefix,
-    ]);
-    $capsule->setAsGlobal();
-    $capsule->bootEloquent();
-}
-add_action('init', 'nhrrob_movies_init');
+    /**
+     * Initialize the plugin
+     *
+     * @return void
+     */
+    public function init_plugin() {
+        new Nhrrob\Movies\Classes\Assets();
 
-function nhrrob_movies_admin_menu() {
-    add_menu_page(
-        'NHR Movies',
-        'NHR Movies',
-        'manage_options',
-        'nhrrob-movies',
-        'nhrrob_movies_route',
-        'dashicons-video-alt2'
-    );
-}
-add_action('admin_menu', 'nhrrob_movies_admin_menu');
-
-function nhrrob_movies_route() {
-    global $nhrrob_movies_routes;
-
-    $current_page = isset($_GET['page']) ? $_GET['page'] : 'nhrrob-movies';
-    $action = isset($_GET['action']) ? $_GET['action'] : 'index';
-    $route_key = $current_page . '/' . $action;
-
-    if (isset($nhrrob_movies_routes[$route_key])) {
-        $controller_action = $nhrrob_movies_routes[$route_key];
-        $controller = new $controller_action[0]();
-        $method = $controller_action[1];
-
-        if (method_exists($controller, $method)) {
-            $controller->$method();
+        if ( is_admin() ) {
+            new Nhrrob\Movies\Classes\Admin();
         } else {
-            echo 'Error: Method not found.';
+            // Front
         }
-    } else {
-        echo 'Error: Route not found.';
     }
 }
 
-function nhrrob_movies_enqueue_styles() {
-    wp_enqueue_style('tailwind-css', 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
-}
-add_action('admin_enqueue_scripts', 'nhrrob_movies_enqueue_styles');
+//call the plugin
+new Nhrrob_Movies();
 
-// Handle form submissions
-add_action('admin_post_nhrrob_movies_store', [new MovieController(), 'store']);
-add_action('admin_post_nhrrob_movies_update', [new MovieController(), 'update']);
-add_action('admin_post_nhrrob_movies_delete', [new MovieController(), 'destroy']);
+require_once __DIR__ . '/bootstrap/app.php';

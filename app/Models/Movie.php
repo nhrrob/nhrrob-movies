@@ -1,6 +1,6 @@
 <?php
 
-namespace NHRRob\Movies\Models;
+namespace Nhrrob\Movies\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
