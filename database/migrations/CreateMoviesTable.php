@@ -2,9 +2,11 @@
 
 namespace Nhrrob\Movies\Database\Migrations;
 
-class CreateMoviesTable
+use Nhrrob\Movies\Database\Migration;
+
+class CreateMoviesTable extends Migration
 {
-    public static function up()
+    public function up()
     {
         global $wpdb;
         $table_name = $wpdb->prefix . 'nhrrob_movies';
@@ -32,7 +34,7 @@ class CreateMoviesTable
         }
     }
 
-    public static function down()
+    public function down()
     {
         global $wpdb;
         $table_name = $wpdb->prefix . 'nhrrob_movies';

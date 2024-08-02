@@ -3,6 +3,9 @@
 namespace Nhrrob\Movies\Database;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
+use Nhrrob\Movies\Database\Migrations\AddReleaseDateToMoviesTable;
+use Nhrrob\Movies\Database\Migrations\AddUpdatedAtToMoviesTable;
+use Nhrrob\Movies\Database\Migrations\CreateMoviesTable;
 
 class Connection {
 
