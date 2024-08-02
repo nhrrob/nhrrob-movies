@@ -23,7 +23,6 @@ register_activation_hook(NHRROB_MOVIES_FILE, 'nhrrob_movies_activate');
 
 function nhrrob_movies_activate() {
     $migrations = [
-        new AddReleaseDateToMoviesTable(),
         new CreateMoviesTable(),
         new AddReleaseDateToMoviesTable(),
         new AddUpdatedAtToMoviesTable(),
