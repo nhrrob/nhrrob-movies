@@ -6,6 +6,7 @@ if (!defined('ABSPATH')) {
 
 use Jenssegers\Blade\Blade;
 use Nhrrob\Movies\Database\Connection;
+use Nhrrob\Movies\Database\Migrations\AddReleaseDateToMoviesTable;
 use Nhrrob\Movies\Database\Migrations\CreateMoviesTable;
 
 // DB Connection
@@ -20,6 +21,7 @@ register_activation_hook(NHRROB_MOVIES_FILE, 'nhrrob_movies_activate');
 
 function nhrrob_movies_activate() {
     CreateMoviesTable::up();
+    AddReleaseDateToMoviesTable::up();
 }
 
 // Initialize Blade templating

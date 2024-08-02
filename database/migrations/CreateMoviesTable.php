@@ -14,7 +14,7 @@ class CreateMoviesTable
                 "SHOW TABLES LIKE %s",
                 stripslashes( $table_name ),
             )
-            );
+        );
 
         if ($existing_table_name != $table_name) {
             $charset_collate = $wpdb->get_charset_collate();
