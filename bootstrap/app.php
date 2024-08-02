@@ -9,6 +9,7 @@ use Nhrrob\Movies\Database\Connection;
 use Nhrrob\Movies\Database\Migrations\AddReleaseDateToMoviesTable;
 use Nhrrob\Movies\Database\Migrations\AddUpdatedAtToMoviesTable;
 use Nhrrob\Movies\Database\Migrations\CreateMoviesTable;
+use Nhrrob\Movies\Database\Migrations\RemoveCreatedByFromMoviesTable;
 
 // DB Connection
 add_action('init', 'nhrrob_movies_init');
