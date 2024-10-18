@@ -2,9 +2,9 @@
 Contributors: nhrrob
 Tags: movies, management, laravel, eloquent, blade
 Requires at least: 6.0
-Tested up to: 6.6
+Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.1.4
+Stable tag: 1.1.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,6 +72,10 @@ The NHR Movies plugin only transmits the WordPress.org username specified by the
 4. Dashboard => NHR Movies menu location
 
 == Changelog ==
+
+= 1.1.5 - 18/10/2024 =
+- WordPress tested up to version is updated to 6.7
+- Few minor bug fixing & improvements
 
 = 1.1.4 - 02/08/2024 =
 - Added: Legacy data removal migration
